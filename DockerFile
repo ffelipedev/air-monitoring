@@ -1,0 +1,26 @@
+# Imagen base ligera con Python
+FROM python:3.10-slim
+
+# Establece el directorio de trabajo
+WORKDIR /app
+
+# Instala dependencias del sistema (para psycopg2, Pillow, etc.)
+RUN apt-get update && apt-get install -y \
+    libpq-dev gcc python3-dev musl-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copia los archivos del proyecto al contenedor
+COPY . .
+
+# Instala las dependencias de Python
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Configura variables de entorno
+ENV PORT=8080
+ENV PYTHONUNBUFFERED=1
+
+# Expone el puerto 8080 (usado por Cloud Run)
+EXPOSE 8080
+
+# Aplica migraciones y arranca el servidor con Gunicorn
+CMD python manage.py collectstatic --noinput && python manage.py migrate && gunicorn mi_proyecto.wsgi:application --bind 0.0.0.0:$PORT
