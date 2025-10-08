@@ -32,3 +32,7 @@ EXPOSE 8080
 # Comando para ejecutar Django con Gunicorn
 # Reemplaza 'airmonitoring' por el nombre de tu carpeta principal de Django si es distinto
 CMD ["gunicorn", "airmonitoring.wsgi:application", "--bind", "0.0.0.0:8080"]
+
+
+# cambio en dockerfile
+
